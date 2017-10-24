@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 public class Ticket {
 
     @Id
@@ -21,5 +20,12 @@ public class Ticket {
 
     @OneToOne(cascade = CascadeType.ALL)
     private TicketType ticketType;
+
+    private Ticket(){}
+
+    private Ticket(String barcode, TicketType ticketType){
+        this.barcode = barcode;
+        this.ticketType = ticketType;
+    }
 
 }

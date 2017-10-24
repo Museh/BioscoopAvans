@@ -1,7 +1,6 @@
 package avans.bioscoop.models;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
@@ -12,7 +11,6 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 public class TicketType {
 
     @Id
@@ -22,5 +20,12 @@ public class TicketType {
     private String name;
 
     private int price;
+
+    public TicketType(){}
+
+    public TicketType(String name, int price){
+        this.name = name;
+        this.price = price;
+    }
 
 }

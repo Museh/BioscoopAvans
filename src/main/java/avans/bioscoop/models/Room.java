@@ -12,7 +12,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 public class Room {
 
     @Id
@@ -25,5 +24,12 @@ public class Room {
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<Viewing> viewings = new ArrayList<>();
+
+    public Room(){}
+
+    public Room(int roomNumber, boolean wheelchair){
+        this.roomNumber = roomNumber;
+        this.wheelchair = wheelchair;
+    }
 
 }

@@ -12,7 +12,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 public class Cinema {
 
     @Id
@@ -31,4 +30,14 @@ public class Cinema {
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<Room> rooms = new ArrayList<>();
+
+    public Cinema(){}
+
+    public Cinema(String name, String country, String city, String street, String zipcode){
+        this.name = name;
+        this.country = country;
+        this.city = city;
+        this.street = street;
+        this.zipcode = zipcode;
+    }
 }

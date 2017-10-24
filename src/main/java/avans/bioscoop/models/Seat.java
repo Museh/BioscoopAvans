@@ -12,7 +12,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 public class Seat {
 
     @Id
@@ -23,5 +22,11 @@ public class Seat {
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<Ticket> tickets = new ArrayList<>();
+
+    public Seat(){}
+
+    public Seat(int seatNumber){
+        this.seatNumber = seatNumber;
+    }
 
 }

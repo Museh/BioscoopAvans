@@ -12,7 +12,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 public class Row {
 
     @Id
@@ -23,4 +22,10 @@ public class Row {
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<Seat> seats = new ArrayList<>();
+
+    public Row(){}
+
+    public Row(int rowNumber){
+        this.rowNumber = rowNumber;
+    }
 }
