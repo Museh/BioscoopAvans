@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header::head">
+    <title>Overview</title>
+</head>
+<body>
+
+<div th:replace="header::header"></div>
+
+<div>
+    <h1>Movies</h1>
+    <table th:if="${movies}">
+        <tr>
+
+        </tr>
+    </table>
+    <ul th:each="movie : ${movies}">
+        <li th:text="${movie.title}"></li>
+    </ul>
+
+</div>
+
+</body>
+</html>
