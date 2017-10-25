@@ -10,9 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 // TODO: Create mock data for usage in the application
 public class DatabaseManager {
@@ -82,18 +80,18 @@ public class DatabaseManager {
 
         LocalDate date = LocalDate.now();
 
-        Viewing[] viewings = new Viewing[]{
-                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(6, 24, 0)), movieRepository.findOne(1L)),
-                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(6, 24, 0)), movieRepository.findOne(2L)),
-                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(6, 24, 0)), movieRepository.findOne(5L)),
-                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(10, 24, 0)), movieRepository.findOne(3L)),
-                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(10, 24, 0)), movieRepository.findOne(6L)),
-                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(10, 24, 0)), movieRepository.findOne(3L)),
-                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(12, 24, 0)), movieRepository.findOne(4L)),
-                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(12, 24, 0)), movieRepository.findOne(4L)),
-                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(12, 24, 0)), movieRepository.findOne(1L)),
-                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(13, 24, 0)), movieRepository.findOne(2L))
-        };
+        Calendar d = Calendar.getInstance();
+
+
+
+        List<Viewing> viewings = new ArrayList<>();
+        for(int i = 0; i < 8; i++){
+            Date c = d.getTime();
+            d.add(Calendar.HOUR, 1);
+            Random r = new Random();
+            int movieId = r.nextInt(movies.length-1);
+            viewings.add(new Viewing(c, movieRepository.findOne(new Long(movieId+1))));
+        }
 
         for(Viewing v : viewings){
             viewingRepository.save(v);

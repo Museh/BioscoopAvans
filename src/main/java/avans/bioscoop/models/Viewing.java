@@ -4,8 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 // Adding the decorator Entity, tells spring that it's a managed entity
@@ -18,7 +22,8 @@ public class Viewing {
     @GeneratedValue
     private long id;
 
-    private LocalDateTime startTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date startTime;
 
     @OneToOne
     private Movie movie;
@@ -28,14 +33,14 @@ public class Viewing {
 
     public Viewing(){}
 
-    public Viewing(LocalDateTime startTime, Movie movie){
+    public Viewing(Date startTime, Movie movie){
         this.startTime = startTime;
         this.movie = movie;
     }
 
-    public Viewing(Viewing viewing){
-        this.startTime = viewing.getStartTime();
-        this.movie = viewing.getMovie();
-    }
+    //public Viewing(Viewing viewing){
+    //    this.startTime = viewing.getStartTime();
+    //    this.movie = viewing.getMovie();
+    //}
 
 }

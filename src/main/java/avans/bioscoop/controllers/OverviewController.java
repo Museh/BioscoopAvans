@@ -4,6 +4,7 @@ import avans.bioscoop.dao.*;
 import avans.bioscoop.models.Movie;
 import avans.bioscoop.models.Row;
 import avans.bioscoop.models.TicketType;
+import avans.bioscoop.models.Viewing;
 import avans.bioscoop.services.DatabaseManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,12 +68,10 @@ public class OverviewController {
      */
     @GetMapping
     public String movieOverview(Model model) {
-        List<Movie> movies = new ArrayList<Movie>();
-        movies = movieRepository.findAll();
+        List<Viewing> viewings = new ArrayList<Viewing>();
+        viewings = viewingRepository.findAllViewings();
 
-        System.out.println("Size is: " + movies.size());
-
-        model.addAttribute("movies", movies);
+        model.addAttribute("viewings", viewings);
         // TODO: Retrieve movie data and pass it to your view with a model named after 'movies'
         return "overview/overview";
     }
@@ -82,10 +82,11 @@ public class OverviewController {
         return new ModelAndView();
     }
 
-    public ModelAndView getMovieDetails(long id){
-
+    @GetMapping("/details")
+    public String getMovieDetails(){
+        System.out.println("inside movie details");
         // TODO: Return a view that shows the details of a movie
-        return new ModelAndView();
+        return "overview/moviedetails";
     }
 
 }

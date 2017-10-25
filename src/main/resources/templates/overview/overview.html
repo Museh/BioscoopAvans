@@ -8,15 +8,16 @@
 <div th:replace="header::header"></div>
 
 <div>
-    <h1>Movies</h1>
-    <table th:if="${movies}">
+    <h1>Viewings</h1>
+
+    <table th:if="${viewings}">
         <tr>
 
         </tr>
     </table>
-    <ul th:each="movie : ${movies}">
-        <li th:text="${movie.title}"><img th:src="${movie.image}"/></li>
-    </ul>
+    <!--<ul th:each="viewing : ${viewings}">-->
+        <!--<li th:text="${viewing.movie.title}" th:href="/movie/{viewing.movie.id}"><img th:src="${viewing.movie.image}"/></li>-->
+    <!--</ul>-->
 
 </div>
 
