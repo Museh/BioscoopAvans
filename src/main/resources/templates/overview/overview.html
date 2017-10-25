@@ -26,14 +26,5 @@
 
 </div>
 
-
-<tr th:each="category : ${categories}">
-    <td th:text="${category.idCategory}"></td>
-    <td th:text="${category.name}"></td>
-    <td>
-        <a th:href="@{'/category/edit/' + ${category.id}}">view</a>
-    </td>
-</tr>
-
 </body>
 </html>

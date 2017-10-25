@@ -95,4 +95,15 @@ public class OverviewController {
         return "overview/moviedetails";
     }
 
+    @GetMapping ("/movies")
+    public String allMovies(Model model) {
+        List<Movie> movie = new ArrayList<Movie>();
+        movie = movieRepository.findAll();
+
+        model.addAttribute("movie", movie);
+        // TODO: Retrieve movie data and pass it to your view with a model named after 'movies'
+        return "overview/movies";
+    }
+
+
 }
