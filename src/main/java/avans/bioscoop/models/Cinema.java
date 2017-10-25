@@ -40,4 +40,13 @@ public class Cinema {
         this.street = street;
         this.zipcode = zipcode;
     }
+
+    public Cinema(String name, String country, String city, String street, String zipcode, List<Room> rooms){
+        this.name = name;
+        this.country = country;
+        this.city = city;
+        this.street = street;
+        this.zipcode = zipcode;
+        this.rooms = rooms;
+    }
 }

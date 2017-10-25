@@ -20,12 +20,17 @@ public class Row {
 
     private int rowNumber;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Seat> seats = new ArrayList<>();
 
     public Row(){}
 
     public Row(int rowNumber){
         this.rowNumber = rowNumber;
+    }
+
+    public Row(int rowNumber, List<Seat> seats){
+        this.rowNumber = rowNumber;
+        this.seats = seats;
     }
 }

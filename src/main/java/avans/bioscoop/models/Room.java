@@ -22,7 +22,10 @@ public class Room {
 
     private boolean wheelchair;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Row> rows = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Viewing> viewings = new ArrayList<>();
 
     public Room(){}
@@ -30,6 +33,26 @@ public class Room {
     public Room(int roomNumber, boolean wheelchair){
         this.roomNumber = roomNumber;
         this.wheelchair = wheelchair;
+    }
+
+    public Room(int roomNumber, boolean wheelchair, Viewing viewing){
+        this.roomNumber = roomNumber;
+        this.wheelchair = wheelchair;
+        this.viewings.add(viewing);
+    }
+
+    public Room(int roomNumber, boolean wheelchair, List<Viewing> viewings, List<Row> rows){
+        this.roomNumber = roomNumber;
+        this.wheelchair = wheelchair;
+        this.viewings = viewings;
+        this.rows = rows;
+    }
+
+    public Room(int roomNumber, boolean wheelchair, Viewing viewing, List<Row> rows){
+        this.roomNumber = roomNumber;
+        this.wheelchair = wheelchair;
+        this.viewings.add(viewing);
+        this.rows = rows;
     }
 
 }

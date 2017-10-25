@@ -1,9 +1,8 @@
 package avans.bioscoop.controllers;
 
-import avans.bioscoop.dao.CinemaRepository;
-import avans.bioscoop.dao.MovieRepository;
-import avans.bioscoop.dao.TicketTypeRepository;
+import avans.bioscoop.dao.*;
 import avans.bioscoop.models.Movie;
+import avans.bioscoop.models.Row;
 import avans.bioscoop.models.TicketType;
 import avans.bioscoop.services.DatabaseManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +32,31 @@ public class OverviewController {
     @Autowired
     private TicketTypeRepository ticketTypeRepository;
 
-    public OverviewController(CinemaRepository cinemaRepository, MovieRepository movieRepository, TicketTypeRepository ticketTypeRepository){
+    @Autowired
+    private ViewingRepository viewingRepository;
+
+    @Autowired
+    private RoomRepository roomRepository;
+
+    @Autowired
+    private RowRepository rowRepository;
+
+    @Autowired
+    private SeatsRepository seatsRepository;
+
+    public OverviewController(CinemaRepository cinemaRepository, MovieRepository movieRepository, TicketTypeRepository ticketTypeRepository,
+                              ViewingRepository viewingRepository, RoomRepository roomRepository, RowRepository rowRepository,
+                              SeatsRepository seatsRepository){
         this.cinemaRepository = cinemaRepository;
         this.movieRepository = movieRepository;
         this.ticketTypeRepository = ticketTypeRepository;
+        this.viewingRepository = viewingRepository;
+        this.roomRepository = roomRepository;
+        this.rowRepository = rowRepository;
+        this.seatsRepository = seatsRepository;
 
-        this.db = new DatabaseManager(cinemaRepository, movieRepository, ticketTypeRepository);
+
+        this.db = new DatabaseManager(cinemaRepository, movieRepository, ticketTypeRepository, viewingRepository, roomRepository, rowRepository, seatsRepository);
     }
 
     /**

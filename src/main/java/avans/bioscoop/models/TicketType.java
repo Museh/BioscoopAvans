@@ -19,11 +19,11 @@ public class TicketType {
 
     private String name;
 
-    private int price;
+    private double price;
 
     public TicketType(){}
 
-    public TicketType(String name, int price){
+    public TicketType(String name, double price){
         this.name = name;
         this.price = price;
     }

@@ -1,13 +1,18 @@
 package avans.bioscoop.services;
 
-import avans.bioscoop.dao.CinemaRepository;
-import avans.bioscoop.dao.MovieRepository;
-import avans.bioscoop.dao.TicketTypeRepository;
-import avans.bioscoop.models.Cinema;
-import avans.bioscoop.models.Movie;
-import avans.bioscoop.models.TicketType;
-import avans.bioscoop.models.Viewing;
-import org.springframework.beans.factory.annotation.Autowired;
+import avans.bioscoop.dao.*;
+import avans.bioscoop.models.*;
+import org.apache.tomcat.jni.Local;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 // TODO: Create mock data for usage in the application
 public class DatabaseManager {
@@ -18,11 +23,24 @@ public class DatabaseManager {
 
     private TicketTypeRepository ticketTypeRepository;
 
+    private ViewingRepository viewingRepository;
+
+    private RoomRepository roomRepository;
+
+    private RowRepository rowRepository;
+
+    private SeatsRepository seatsRepository;
+
     public DatabaseManager(CinemaRepository cinemaRepository, MovieRepository movieRepository,
-                           TicketTypeRepository ticketTypeRepository){
+                           TicketTypeRepository ticketTypeRepository, ViewingRepository viewingRepository,
+                           RoomRepository roomRepository, RowRepository rowRepository, SeatsRepository seatsRepository){
         this.cinemaRepository = cinemaRepository;
         this.movieRepository = movieRepository;
         this.ticketTypeRepository = ticketTypeRepository;
+        this.viewingRepository = viewingRepository;
+        this.roomRepository = roomRepository;
+        this.rowRepository = rowRepository;
+        this.seatsRepository = seatsRepository;
 
         prepareDatabase();
     }
@@ -35,8 +53,13 @@ public class DatabaseManager {
     // Adds mock data to our database by initializing it from bottom to start
     public void prepareDatabase(){
         TicketType[] ticketTypes = new TicketType[]{
-                new TicketType()
+                new TicketType("Regulier", 12.50),
+                new TicketType("Regulier met popcorn", 15.00)
         };
+
+        for(TicketType t : ticketTypes){
+            ticketTypeRepository.save(t);
+        }
 
         Movie[] movies = new Movie[]{
             new Movie("Jigsaw", 91, false, 16, "english", false, "https://images-na.ssl-images-amazon.com/images/M/MV5BNmRiZDM4ZmMtOTVjMi00YTNlLTkyNjMtMjI2OTAxNjgwMWM1XkEyXkFqcGdeQXVyMjMxOTE0ODA@._V1_SY1000_CR0,0,648,1000_AL_.jpg"),
@@ -57,11 +80,64 @@ public class DatabaseManager {
             movieRepository.save(m);
         }
 
-        Viewing[] viewings = new Viewing[]{};
+        LocalDate date = LocalDate.now();
 
+        Viewing[] viewings = new Viewing[]{
+                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(6, 24, 0)), movieRepository.findOne(1L)),
+                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(6, 24, 0)), movieRepository.findOne(2L)),
+                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(6, 24, 0)), movieRepository.findOne(5L)),
+                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(10, 24, 0)), movieRepository.findOne(3L)),
+                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(10, 24, 0)), movieRepository.findOne(6L)),
+                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(10, 24, 0)), movieRepository.findOne(3L)),
+                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(12, 24, 0)), movieRepository.findOne(4L)),
+                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(12, 24, 0)), movieRepository.findOne(4L)),
+                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(12, 24, 0)), movieRepository.findOne(1L)),
+                new Viewing(LocalDateTime.of(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()), LocalTime.of(13, 24, 0)), movieRepository.findOne(2L))
+        };
 
-        Cinema cinema = new Cinema();
+        for(Viewing v : viewings){
+            viewingRepository.save(v);
+        }
 
+        List<Seat> seats = new ArrayList<>();
+        for(int i = 0; i <= 75; i++){
+            seats.add(new Seat(i+1));
+        }
+
+        for(Seat s: seats){
+            seatsRepository.save(s);
+        }
+
+        List<Row> rows = new ArrayList<>();
+        int skip = 0;
+        for(int i = 0; i < 15; i++){
+            rows.add(new Row(i+1, seatsRepository.getSeats(skip, 5)));
+            skip += 5;
+        }
+
+        for(Row r: rows){
+            rowRepository.save(r);
+        }
+
+        List<Room> rooms = new ArrayList<>();
+        skip = 0;
+        for(int i = 0; i < 3; i++){
+            rooms.add(new Room(i+1, true, viewingRepository.findOne(i+1L), rowRepository.getRows(skip, 5)));
+            skip+=5;
+        }
+
+        for(Room room : rooms){
+            roomRepository.save(room);
+        }
+
+        Cinema cinema = new Cinema("Bioscoop Avans", "Nederland", "Breda", "Lovensdijkstraat 61-63", "4818 AJ", roomRepository.findAll());
+
+        cinemaRepository.save(cinema);
+
+        //Viewing testView = new Viewing(viewingRepository.findOne(1L));
+
+        //DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm");
+        //System.out.println("HOI: " + testView.getStartTime().format(format));
 
     }
 
