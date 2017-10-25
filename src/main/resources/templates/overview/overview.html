@@ -11,15 +11,29 @@
     <h1>Viewings</h1>
 
     <table th:if="${viewings}">
-        <tr>
-
+        <tr th:each="viewing : ${viewings}">
+            <td th:text="${viewing.movie.title}"></td>
+            <!--<td th:text="${viewing.movie.length}"></td>-->
+            <td>
+                <a th:href="@{'/movie/details/' + ${viewing.movie.id}}">details</a>
+            </td>
         </tr>
     </table>
+
     <!--<ul th:each="viewing : ${viewings}">-->
-        <!--<li th:text="${viewing.movie.title}" th:href="/movie/{viewing.movie.id}"><img th:src="${viewing.movie.image}"/></li>-->
+        <!--<li th:text="${viewing.movie.title}"></li>-->
     <!--</ul>-->
 
 </div>
+
+
+<tr th:each="category : ${categories}">
+    <td th:text="${category.idCategory}"></td>
+    <td th:text="${category.name}"></td>
+    <td>
+        <a th:href="@{'/category/edit/' + ${category.id}}">view</a>
+    </td>
+</tr>
 
 </body>
 </html>

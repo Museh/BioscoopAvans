@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -82,10 +83,15 @@ public class OverviewController {
         return new ModelAndView();
     }
 
-    @GetMapping("/details")
-    public String getMovieDetails(){
-        System.out.println("inside movie details");
-        // TODO: Return a view that shows the details of a movie
+    
+    @GetMapping(value = "/movie/details/{id}")
+    public String getMovieDetails(@PathVariable(value ="id", required = true) Long movieid, Model model){
+        //System.out.println("inside movie details");
+        Movie movie = movieRepository.findOne(movieid);
+        List<Viewing> viewings = viewingRepository.findAllViewingsByMovieId(movieid);
+
+        model.addAttribute("movie", movie);
+        model.addAttribute("viewings", viewings);
         return "overview/moviedetails";
     }
 

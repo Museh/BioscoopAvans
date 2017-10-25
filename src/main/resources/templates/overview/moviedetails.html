@@ -7,11 +7,32 @@
 
 <div th:replace="header::header"></div>
 
-<div>
-    <h1>Details</h1>
+    <div>
+        <h1 th:text="${movie.title}"> </h1>
+    </div>
 
+    <div style="float: left;">
+        <img th:src="${movie.image}" width="25%" />
+    </div>
+    <div>
+        <ul>
+            <li th:text="${movie.title}"></li>
+            <li th:text="${movie.length} + minuten"></li>
+            <li th:text="${movie.age}"></li>
+            <!--<li th:text="${movie.is3D}"></li>-->
+            <li th:text="${movie.language}"></li>
+            <!--<li th:text="${movie.subs}"></li>-->
+        </ul>
+    </div>
 
-</div>
+    <h2>Tijden</h2>
+
+    <div>
+        <ul th:each="viewing : ${viewings}">
+            <li th:text="${viewing.startTime}"></li>
+    </ul>
+
+    </div>
 
 </body>
 </html>
