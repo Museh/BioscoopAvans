@@ -29,6 +29,7 @@ public class Cinema {
     private String zipcode;
 
     @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "CINEMA_ID", referencedColumnName = "id")
     private List<Room> rooms = new ArrayList<>();
 
     public Cinema(){}

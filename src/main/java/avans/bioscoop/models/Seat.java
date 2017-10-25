@@ -21,6 +21,7 @@ public class Seat {
     private int seatNumber;
 
     @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "SEAT_ID", referencedColumnName = "id")
     private List<Ticket> tickets = new ArrayList<>();
 
     public Seat(){}

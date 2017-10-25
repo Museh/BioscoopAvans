@@ -21,6 +21,7 @@ public class Row {
     private int rowNumber;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ROW_ID", referencedColumnName = "id")
     private List<Seat> seats = new ArrayList<>();
 
     public Row(){}

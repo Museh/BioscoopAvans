@@ -78,19 +78,19 @@ public class DatabaseManager {
             movieRepository.save(m);
         }
 
-        LocalDate date = LocalDate.now();
-
-        Calendar d = Calendar.getInstance();
-
-
+        Calendar c = Calendar.getInstance();
 
         List<Viewing> viewings = new ArrayList<>();
-        for(int i = 0; i < 8; i++){
-            Date c = d.getTime();
-            d.add(Calendar.HOUR, 1);
+        for(int i = 0; i < 21; i++){
+            Date d = c.getTime();
+            if(c.get(Calendar.HOUR_OF_DAY) == 21){
+                c.add(Calendar.HOUR, 13);
+            }else{
+                c.add(Calendar.HOUR, 1);
+            }
             Random r = new Random();
             int movieId = r.nextInt(movies.length-1);
-            viewings.add(new Viewing(c, movieRepository.findOne(new Long(movieId+1))));
+            viewings.add(new Viewing(d, movieRepository.findOne(new Long(movieId+1))));
         }
 
         for(Viewing v : viewings){
@@ -120,8 +120,8 @@ public class DatabaseManager {
         List<Room> rooms = new ArrayList<>();
         skip = 0;
         for(int i = 0; i < 3; i++){
-            rooms.add(new Room(i+1, true, viewingRepository.findOne(i+1L), rowRepository.getRows(skip, 5)));
-            skip+=5;
+            rooms.add(new Room(i+1, true, viewingRepository.findAllViewsWithSkip(skip,7), rowRepository.getRows(skip, 5)));
+            skip+=7;
         }
 
         for(Room room : rooms){
