@@ -7,18 +7,28 @@
 
 <div th:replace="header::header"></div>
 
-<div>
+<div class="wrapper">
     <h1>Viewings</h1>
 
+    <div class="viewingtiles">
     <table th:if="${viewings}">
         <tr th:each="viewing : ${viewings}">
-            <td th:text="${viewing.movie.title}"></td>
-            <!--<td th:text="${viewing.movie.length}"></td>-->
             <td>
-                <a th:href="@{'/movie/details/' + ${viewing.movie.id}}">details</a>
+                    <h3 style="text-align: center" th:text="${viewing.movie.title}"></h3>
+                    <img th:src="${viewing.movie.image}"/>
+
+                <ul>
+
+                    <li th:text="${viewing.movie.length}  +  minuten"></li>
+                    <li th:text="${viewing.movie.age}"></li>
+                    <li th:text="${viewing.movie.language}"></li>
+                    <li></li>
+                    <li><a th:href="@{'/movie/details/' + ${viewing.movie.id}}">details</a></li>
+                </ul>
             </td>
         </tr>
     </table>
+    </div>
 
     <!--<ul th:each="viewing : ${viewings}">-->
         <!--<li th:text="${viewing.movie.title}"></li>-->
