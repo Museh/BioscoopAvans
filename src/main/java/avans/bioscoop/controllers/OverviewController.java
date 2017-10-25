@@ -7,11 +7,10 @@ import avans.bioscoop.services.DatabaseManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -67,30 +66,46 @@ public class OverviewController {
      */
     @GetMapping
     public String movieOverview(Model model) {
-        List<Viewing> viewings = new ArrayList<Viewing>();
-        viewings = viewingRepository.findAllViewings();
+        List<Viewing> viewings = viewingRepository.findAllViewings();
 
         model.addAttribute("viewings", viewings);
-        // TODO: Retrieve movie data and pass it to your view with a model named after 'movies'
+        model.addAttribute("searchobject", new SearchTerm());
+
         return "overview/overview";
     }
 
-    @GetMapping(value = "/search/{term}")
-    public String searchMovie(@PathVariable(value = "term", required = false) String term, Model model){
+    @RequestMapping(method = RequestMethod.POST)
+    public String searchMovie(@ModelAttribute SearchTerm searchobject, Model model){
 
         DataFilter df = new DataFilter();
 
-        List<Viewing> viewings = df.filterViewingsByMovieTitle(viewingRepository.findAllViewings(), term);
+        List<Viewing> viewings = df.filterViewingsByMovieTitle(viewingRepository.findAllViewings(), searchobject.getSearch());
 
-        if(term != ""){
-            model.addAttribute("viewings", viewings);
-        }else{
-            model.addAttribute("viewings", viewings);
-        }
+        model.addAttribute("viewings", viewings);
+        model.addAttribute("searchobject", new SearchTerm());
 
         // TODO: fastest implementation is to navigate to a new page that looks the same as the movie
         return "overview/overview";
     }
+
+
+
+//    @GetMapping(value = "/search/{term}")
+//    public String searchMovie(@PathVariable(value = "term", required = false) String term, Model model){
+//
+//        DataFilter df = new DataFilter();
+//
+//        List<Viewing> viewings = df.filterViewingsByMovieTitle(viewingRepository.findAllViewings(), term);
+//
+//        if(term != ""){
+//            model.addAttribute("viewings", viewings);
+//        }else{
+//            model.addAttribute("viewings", viewings);
+//        }
+//
+//        // TODO: fastest implementation is to navigate to a new page that looks the same as the movie
+//        return "overview/overview";
+//    }
 
     
     @GetMapping(value = "/movie/details/{id}")

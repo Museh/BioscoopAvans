@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:form="http://www.w3.org/1999/html">
 <head th:replace="header::head">
     <title>Overview</title>
 </head>
@@ -9,7 +9,12 @@
 
 <div>
     <h1>Viewings</h1>
+    <form action="#" th:action="@{/}" th:object="${searchobject}" method="post">
+        <p>Zoek: <input type="text" th:field="*{search}" /></p>
+        <p><input type="submit" value="Zoek" /></p>
+    </form>
 
+    <h2 th:if="${viewings.empty}">Geen resultaten/viewings</h2>
     <table th:if="${viewings}">
         <tr th:each="viewing : ${viewings}">
             <td th:text="${viewing.movie.title}"></td>
