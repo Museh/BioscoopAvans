@@ -5,6 +5,7 @@ import avans.bioscoop.models.Movie;
 import avans.bioscoop.models.Row;
 import avans.bioscoop.models.TicketType;
 import avans.bioscoop.models.Viewing;
+import avans.bioscoop.services.DataFilter;
 import avans.bioscoop.services.DatabaseManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -77,10 +78,21 @@ public class OverviewController {
         return "overview/overview";
     }
 
-    public ModelAndView searchMovie(String term){
+    @GetMapping(value = "/search/{term}")
+    public String searchMovie(@PathVariable(value = "term", required = false) String term, Model model){
+
+        DataFilter df = new DataFilter();
+
+        List<Viewing> viewings = df.filterViewingsByMovieTitle(viewingRepository.findAllViewings(), term);
+
+        if(term != ""){
+            model.addAttribute("viewings", viewings);
+        }else{
+            model.addAttribute("viewings", viewings);
+        }
 
         // TODO: fastest implementation is to navigate to a new page that looks the same as the movie
-        return new ModelAndView();
+        return "overview/overview";
     }
 
     
