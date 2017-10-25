@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header::head">
+    <title>Contact</title>
+</head>
+<body>
+
+<div th:replace="header::header"></div>
+
+    <div>
+        <p th:text="${contact.name}"></p>
+        <p th:text="${contact.street}"></p>
+        <p th:text="${contact.zipcode}"></p>
+        <p th:text="${contact.city}"></p>
+
+    </div>
+
+    <div>
+
+    </div>
+
+</body>
+</html>

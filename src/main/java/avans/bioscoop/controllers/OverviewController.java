@@ -1,10 +1,7 @@
 package avans.bioscoop.controllers;
 
 import avans.bioscoop.dao.*;
-import avans.bioscoop.models.Movie;
-import avans.bioscoop.models.Row;
-import avans.bioscoop.models.TicketType;
-import avans.bioscoop.models.Viewing;
+import avans.bioscoop.models.*;
 import avans.bioscoop.services.DataFilter;
 import avans.bioscoop.services.DatabaseManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,6 +112,15 @@ public class OverviewController {
         model.addAttribute("movie", movie);
         // TODO: Retrieve movie data and pass it to your view with a model named after 'movies'
         return "overview/movies";
+    }
+
+    @GetMapping("/contact")
+    public String getContact(Model model){
+        Cinema contact = cinemaRepository.findOne(1L);
+
+        model.addAttribute("contact", contact);
+
+        return "overview/contact";
     }
 
 
