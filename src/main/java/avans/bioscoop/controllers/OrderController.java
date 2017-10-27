@@ -78,7 +78,11 @@ public class OrderController {
     @RequestMapping(value = "/chairselection", method = RequestMethod.POST)
     public String getChairSelection(@RequestParam Map<String, String> params, Model model){
 
-        int totalSeats = params.size();
+        int totalSeats = 0;
+
+        for(String count : params.values()){
+            totalSeats += Integer.parseInt(count);
+        }
 
         for(TicketType type : ticketTypes){
             SessionTracker.getSession().setAttribute("tickets", params);
@@ -90,6 +94,7 @@ public class OrderController {
 
         List<BigInteger> takenSeats = ticketRepository.findTicketsByViewingId(viewing.getId());
 
+        model.addAttribute("totalSeats", totalSeats);
         model.addAttribute("room", room);
         model.addAttribute("viewing", viewing);
         model.addAttribute("takenSeats", takenSeats);
@@ -99,7 +104,7 @@ public class OrderController {
     }
 
     @RequestMapping(value = "/payment", method = RequestMethod.POST)
-    public String getPaymentView(@RequestParam List<Long> params, Model model){
+    public String getPaymentView(@RequestParam Map<Long, String> params, Model model){
 
         System.out.println(params);
 

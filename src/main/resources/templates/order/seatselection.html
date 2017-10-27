@@ -8,7 +8,7 @@
 
 <h1 style="align-content: center">-----------------------------</h1>
 
-<form action="#" th:action="@{/ticketoverview/payment}" method="post">
+<form action="#" th:action="@{/ticketview/payment}" method="post">
     <table>
         <tr style="width: 100%" th:each="row : ${viewing.room.rows}">
             <td th:each="seat : ${row.seats}"><input th:name="${seat.id}" type="checkbox" th:checked="${takenSeats.contains(seat.id)} ? true : false" /></td>
