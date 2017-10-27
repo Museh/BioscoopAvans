@@ -10,5 +10,5 @@ import java.util.List;
 public interface TicketRepository extends JpaRepository<Ticket, Long>{
 
     @Query(value = "SELECT SEAT_ID FROM TICKET WHERE VIEWING_ID = ?1", nativeQuery = true)
-    List<BigInteger> findTicketsByViewingId(Long id);
+    List<Number> findTicketsByViewingId(Long id);
 }

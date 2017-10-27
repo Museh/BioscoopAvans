@@ -92,7 +92,11 @@ public class OrderController {
         System.out.println("VIEWING ROOM: " + viewing.getRoom().getId());
         Room room = viewing.getRoom();
 
-        List<BigInteger> takenSeats = ticketRepository.findTicketsByViewingId(viewing.getId());
+        List<Long> takenSeats = new ArrayList<>();
+
+        for(Number n : ticketRepository.findTicketsByViewingId(viewing.getId())){
+            takenSeats.add(n.longValue());
+        }
 
         model.addAttribute("totalSeats", totalSeats);
         model.addAttribute("room", room);
@@ -100,7 +104,6 @@ public class OrderController {
         model.addAttribute("takenSeats", takenSeats);
 
         return "order/seatselection";
-
     }
 
     @RequestMapping(value = "/payment", method = RequestMethod.POST)
@@ -109,5 +112,11 @@ public class OrderController {
         System.out.println(params);
 
         return "order/payment";
+    }
+
+    @GetMapping(value = "/printing")
+    public String getPrintingView(){
+
+        return "order/printing";
     }
 }
