@@ -34,6 +34,9 @@ public class OverviewController {
     private MovieRepository movieRepository;
 
     @Autowired
+    private TicketRepository ticketRepository;
+
+    @Autowired
     private TicketTypeRepository ticketTypeRepository;
 
     @Autowired
@@ -48,11 +51,13 @@ public class OverviewController {
     @Autowired
     private SeatsRepository seatsRepository;
 
-    public OverviewController(CinemaRepository cinemaRepository, MovieRepository movieRepository, TicketTypeRepository ticketTypeRepository,
+    public OverviewController(CinemaRepository cinemaRepository, MovieRepository movieRepository,
+                              TicketRepository ticketRepository, TicketTypeRepository ticketTypeRepository,
                               ViewingRepository viewingRepository, RoomRepository roomRepository, RowRepository rowRepository,
                               SeatsRepository seatsRepository){
         this.cinemaRepository = cinemaRepository;
         this.movieRepository = movieRepository;
+        this.ticketRepository = ticketRepository;
         this.ticketTypeRepository = ticketTypeRepository;
         this.viewingRepository = viewingRepository;
         this.roomRepository = roomRepository;
@@ -60,7 +65,7 @@ public class OverviewController {
         this.seatsRepository = seatsRepository;
 
 
-        this.db = new DatabaseManager(cinemaRepository, movieRepository, ticketTypeRepository, viewingRepository, roomRepository, rowRepository, seatsRepository);
+        this.db = new DatabaseManager(cinemaRepository, movieRepository, ticketRepository, ticketTypeRepository, viewingRepository, roomRepository, rowRepository, seatsRepository);
     }
     
     @GetMapping

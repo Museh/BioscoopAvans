@@ -19,6 +19,8 @@ public class DatabaseManager {
 
     private MovieRepository movieRepository;
 
+    private TicketRepository ticketRepository;
+
     private TicketTypeRepository ticketTypeRepository;
 
     private ViewingRepository viewingRepository;
@@ -30,10 +32,11 @@ public class DatabaseManager {
     private SeatsRepository seatsRepository;
 
     public DatabaseManager(CinemaRepository cinemaRepository, MovieRepository movieRepository,
-                           TicketTypeRepository ticketTypeRepository, ViewingRepository viewingRepository,
+                           TicketRepository ticketRepository, TicketTypeRepository ticketTypeRepository, ViewingRepository viewingRepository,
                            RoomRepository roomRepository, RowRepository rowRepository, SeatsRepository seatsRepository){
         this.cinemaRepository = cinemaRepository;
         this.movieRepository = movieRepository;
+        this.ticketRepository = ticketRepository;
         this.ticketTypeRepository = ticketTypeRepository;
         this.viewingRepository = viewingRepository;
         this.roomRepository = roomRepository;

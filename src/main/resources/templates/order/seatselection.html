@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header::head">
+    <title>Seat Selection</title>
+</head>
+<body>
+<div th:replace="header::header"></div>
+
+<h1 style="align-content: center">-----------------------------</h1>
+
+<form th:action="@${/ticketoverview/payment}">
+    <table>
+        <tr style="width: 100%" th:each="row : ${viewing.room.rows}">
+            <td th:each="seat : ${row.seats}" th:id="${seat.id}"><input th:id="${seat.id}" type="checkbox" th:checked="${takenSeats.contains(seat.id)} ? true : false" /></td>
+        </tr>
+    </table>
+    <input type="submit" value="BETALEN" />
+</form>
+
+
+</body>
+</html>

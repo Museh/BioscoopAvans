@@ -28,6 +28,9 @@ public class Viewing {
     @OneToOne
     private Movie movie;
 
+    @ManyToOne
+    private Room room;
+
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "VIEWING_ID", referencedColumnName = "id")
     private List<Ticket> tickets = new ArrayList<Ticket>();

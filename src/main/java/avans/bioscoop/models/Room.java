@@ -3,6 +3,8 @@ package avans.bioscoop.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,10 +24,12 @@ public class Room {
 
     private boolean wheelchair;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "ROOM_ID", referencedColumnName = "id")
     private List<Row> rows = new ArrayList<>();
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "ROOM_ID", referencedColumnName = "id")
     private List<Viewing> viewings = new ArrayList<>();
