@@ -23,6 +23,7 @@ public class Room {
     private boolean wheelchair;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ROOM_ID", referencedColumnName = "id")
     private List<Row> rows = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY)
