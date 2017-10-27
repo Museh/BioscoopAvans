@@ -29,9 +29,8 @@
 
     <div>
         <ul th:each="viewing : ${viewings}">
-            <li th:text="${viewing.startTime}"></li>
+            <a th:href="@{'/ticket/' + ${viewing.id}}"><li th:text="${viewing.startTime}"></li></a>
     </ul>
-
     </div>
 
 </body>
