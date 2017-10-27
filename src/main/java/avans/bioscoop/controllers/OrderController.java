@@ -103,6 +103,6 @@ public class OrderController {
 
         System.out.println(params);
 
-        return "/";
+        return "order/payment";
     }
 }
