@@ -6,15 +6,12 @@ import avans.bioscoop.dao.TicketTypeRepository;
 import avans.bioscoop.dao.ViewingRepository;
 import avans.bioscoop.models.*;
 import avans.bioscoop.services.SessionTracker;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.RedirectView;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,19 +46,7 @@ public class OrderController {
 
     }
 
-    public ModelAndView getTickets(){
-
-        return new ModelAndView();
-    }
-
-/*    @GetMapping
-    public ModelAndView getAvailableTicketTypes(){
-        System.out.println("inside getAvailableTickets");
-        // TODO: Return a view that shows available ticketTypes
-        return new ModelAndView("overview/ticketview");
-    }*/
-
-    //ticket/{id}
+    //Ticket Type Selection
     @GetMapping(value = "/{id}")
     public String getTickets(@PathVariable(value = "id", required = true) Long viewingId, Model model) {
         ticketTypes = ticketTypeRepository.getAllTicketTypes();
@@ -75,31 +60,29 @@ public class OrderController {
         return "overview/ticketview";
     }
 
+    // Ticket types post to params
     @RequestMapping(value = "/chairselection", method = RequestMethod.POST)
     public String getChairSelection(@RequestParam Map<String, String> params, Model model){
 
+        // Total seats based on selected tickets
         int totalSeats = 0;
-
         for(String count : params.values()){
             totalSeats += Integer.parseInt(count);
         }
-
-        for(TicketType type : ticketTypes){
-            SessionTracker.getSession().setAttribute("tickets", params);
-        }
+        SessionTracker.getSession().setAttribute("selectedTickets", params);
 
         Viewing viewing = (Viewing) SessionTracker.getSession().getAttribute("selectedViewing");
         System.out.println("VIEWING ROOM: " + viewing.getRoom().getId());
-        Room room = viewing.getRoom();
+//        Room room = viewing.getRoom();
 
+        // All taken seats
         List<Long> takenSeats = new ArrayList<>();
-
         for(Number n : ticketRepository.findTicketsByViewingId(viewing.getId())){
             takenSeats.add(n.longValue());
         }
 
         model.addAttribute("totalSeats", totalSeats);
-        model.addAttribute("room", room);
+//        model.addAttribute("room", room);
         model.addAttribute("viewing", viewing);
         model.addAttribute("takenSeats", takenSeats);
 
@@ -109,7 +92,28 @@ public class OrderController {
     @RequestMapping(value = "/payment", method = RequestMethod.POST)
     public String getPaymentView(@RequestParam Map<Long, String> params, Model model){
 
-        System.out.println(params);
+        List<TicketType> ticketTypes = ticketTypeRepository.getAllTicketTypes();
+
+        Double totalPrice = 0.0;
+        Map<String, String> selectedTickets = (Map<String, String>) SessionTracker.getSession().getAttribute("selectedTickets");
+        // For each ticket type
+        for(TicketType t : ticketTypes){
+            // Check if selectedTickets has a key with the same name
+            if(selectedTickets.containsKey(t.getName())){
+                // If so: retrieve price and multiply by value with the key (selected amount of tickets of specified type)
+                totalPrice += t.getPrice() * Integer.parseInt(selectedTickets.get(t.getName()));
+            }
+        }
+
+        SessionTracker.getSession().setAttribute("totalPrice", totalPrice);
+        SessionTracker.getSession().setAttribute("selectedSeats", params);
+
+
+        Viewing selectedViewing = (Viewing) SessionTracker.getSession().getAttribute("selectedViewing");
+
+        model.addAttribute("selectedTickets", selectedTickets);
+        model.addAttribute("selectedViewing", selectedViewing);
+        model.addAttribute("totalPrice", totalPrice);
 
         return "order/payment";
     }
