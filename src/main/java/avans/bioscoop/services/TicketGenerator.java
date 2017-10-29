@@ -1,4 +1,16 @@
 package avans.bioscoop.services;
 
-public class TicketGenerator {
+
+public class TicketGenerator{
+
+    public TicketGenerator(){
+
+    }
+
+    public void generateTickets(){
+
+    }
+
+
+
 }

@@ -8,10 +8,17 @@ import avans.bioscoop.models.*;
 import avans.bioscoop.services.SessionTracker;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -108,6 +115,7 @@ public class OrderController {
         SessionTracker.getSession().setAttribute("totalPrice", totalPrice);
         SessionTracker.getSession().setAttribute("selectedSeats", params);
 
+        System.out.println("Selected seats were: " + params.keySet());
 
         Viewing selectedViewing = (Viewing) SessionTracker.getSession().getAttribute("selectedViewing");
 
@@ -122,5 +130,11 @@ public class OrderController {
     public String getPrintingView(){
 
         return "order/printing";
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public void printTickets(){
+        System.out.println("Called printTickets()");
+
     }
 }
