@@ -6,6 +6,7 @@ import avans.bioscoop.dao.TicketTypeRepository;
 import avans.bioscoop.dao.ViewingRepository;
 import avans.bioscoop.models.*;
 import avans.bioscoop.services.SessionTracker;
+import avans.bioscoop.services.TicketGenerator;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -17,8 +18,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
-import java.io.FileInputStream;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -132,9 +135,52 @@ public class OrderController {
         return "order/printing";
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public void printTickets(){
+    @RequestMapping(value="/print", method = RequestMethod.POST)
+    public void printTickets(HttpServletRequest request, HttpServletResponse response){
+        TicketGenerator t = new TicketGenerator();
+        ServletContext servletContext = request.getSession().getServletContext();
+        File tempDirectory = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
+        String temporaryFilePath = tempDirectory.getAbsolutePath();
+
+        String fileName = "Order12345_BioscoopAvans";
+        response.setContentType("application/pdf");
+        response.setHeader("Content-disposition", "attachment; filename="+fileName);
+
+        try{
+            t.generateTickets(temporaryFilePath+"\\"+fileName);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            byteArrayOutputStream = convertPDFToByteArray(temporaryFilePath+"\\"+fileName);
+            OutputStream os = response.getOutputStream();
+            byteArrayOutputStream.writeTo(os);
+            os.flush();
+        }catch(Exception e){
+            System.out.println("ERROR GENERATING TICKETS IN ORDERCONTROLLER: " + e.getLocalizedMessage());
+        }
+
+
         System.out.println("Called printTickets()");
 
+    }
+
+    private ByteArrayOutputStream convertPDFToByteArray(String fileName){
+
+
+        InputStream inputStream = null;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        try{
+            inputStream = new FileInputStream(fileName);
+            byte[] buffer = new byte[1024];
+            baos = new ByteArrayOutputStream();
+
+            int bytesRead;
+            while((bytesRead = inputStream.read(buffer)) != -1){
+                baos.write(buffer, 0, bytesRead);
+            }
+        }catch(Exception e){
+            System.out.println("CANNOT CONVERT PDF TO BYTE ARRAY: " + e.getLocalizedMessage());
+        }
+
+        return baos;
     }
 }
