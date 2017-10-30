@@ -122,9 +122,11 @@ public class OrderController {
 
         Viewing selectedViewing = (Viewing) SessionTracker.getSession().getAttribute("selectedViewing");
 
+        System.out.println("KEYS: " + selectedTickets.keySet() + " - " + "VALUES: " + selectedTickets.values());
         model.addAttribute("selectedTickets", selectedTickets);
         model.addAttribute("selectedViewing", selectedViewing);
         model.addAttribute("totalPrice", totalPrice);
+        model.addAttribute("selectedSeats", params.keySet());
 
         return "order/payment";
     }
@@ -137,19 +139,27 @@ public class OrderController {
 
     @RequestMapping(value="/print", method = RequestMethod.POST)
     public void printTickets(HttpServletRequest request, HttpServletResponse response){
-        TicketGenerator t = new TicketGenerator();
+
         ServletContext servletContext = request.getSession().getServletContext();
         File tempDirectory = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
-        String temporaryFilePath = tempDirectory.getAbsolutePath();
 
-        String fileName = "Order12345_BioscoopAvans";
+        // Create ticketGenerator
+        TicketGenerator ticketGenerator = new TicketGenerator();
+
+        // Get default paths and set file name
+        String temporaryFilePath = tempDirectory.getAbsolutePath();
+        String fileName = "Order_BioscoopAvans";
+        ticketGenerator.setValuesTickets(temporaryFilePath+"\\"+fileName);
+
+        // Set response type to pdf
         response.setContentType("application/pdf");
-        response.setHeader("Content-disposition", "attachment; filename="+fileName);
+        response.setHeader("Content-disposition", "attachment; filename="+fileName+".pdf");
 
         try{
-            t.generateTickets(temporaryFilePath+"\\"+fileName);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            byteArrayOutputStream = convertPDFToByteArray(temporaryFilePath+"\\"+fileName);
+            // Generate tickets
+            ticketGenerator.generateTickets();
+            // Convert to Byte Array
+            ByteArrayOutputStream byteArrayOutputStream = ticketGenerator.convertPDFToByteArray(temporaryFilePath+"\\"+fileName);
             OutputStream os = response.getOutputStream();
             byteArrayOutputStream.writeTo(os);
             os.flush();
@@ -157,30 +167,8 @@ public class OrderController {
             System.out.println("ERROR GENERATING TICKETS IN ORDERCONTROLLER: " + e.getLocalizedMessage());
         }
 
-
         System.out.println("Called printTickets()");
 
     }
 
-    private ByteArrayOutputStream convertPDFToByteArray(String fileName){
-
-
-        InputStream inputStream = null;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        try{
-            inputStream = new FileInputStream(fileName);
-            byte[] buffer = new byte[1024];
-            baos = new ByteArrayOutputStream();
-
-            int bytesRead;
-            while((bytesRead = inputStream.read(buffer)) != -1){
-                baos.write(buffer, 0, bytesRead);
-            }
-        }catch(Exception e){
-            System.out.println("CANNOT CONVERT PDF TO BYTE ARRAY: " + e.getLocalizedMessage());
-        }
-
-        return baos;
-    }
 }
