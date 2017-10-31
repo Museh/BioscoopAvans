@@ -1,38 +1,102 @@
 package avans.bioscoop.services;
 
-import avans.bioscoop.models.TicketType;
-import avans.bioscoop.models.Viewing;
+import avans.bioscoop.dao.SeatsRepository;
+import avans.bioscoop.dao.TicketRepository;
+import avans.bioscoop.dao.ViewingRepository;
+import avans.bioscoop.models.*;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class TicketGenerator{
 
+    private TicketRepository ticketRepository;
+
+    private ViewingRepository viewingRepository;
+
+    private SeatsRepository seatsRepository;
+
     // Name of file
     private String fileName;
-    // Viewing object for which the tickets are bought for
-    private Viewing ticketViewings;
-    // List of tickettypes to set the right price on ticket
-    private List<TicketType> ticketTypes;
 
-    String[] phrases;
+    private TicketViewModel ticketViewModel;
 
-    public TicketGenerator(){
+    private List<Ticket> ticketsForDatabase = new ArrayList<>();
 
+    private Integer total;
+
+    private Map.Entry selectedTicketPair;
+
+    public TicketGenerator(TicketViewModel ticketViewModel, TicketRepository ticketRepository, ViewingRepository viewingRepository, SeatsRepository seatsRepository){
+        this.ticketViewModel = ticketViewModel;
+        this.ticketRepository = ticketRepository;
+        this.viewingRepository = viewingRepository;
+        this.seatsRepository = seatsRepository;
+    }
+
+    private void processViewModel(){
+
+        Iterator selectedTickets = ticketViewModel.getSelectedTickets().entrySet().iterator();
+        Iterator selectedSeats = ticketViewModel.getSelectedSeats().entrySet().iterator();
+
+        selectedTicketPair = (Map.Entry) selectedTickets.next();
+        total = Integer.parseInt(selectedTicketPair.getValue().toString());
+
+        while (selectedSeats.hasNext()) {
+
+            System.out.println("TOTAL IS: " + total);
+
+            if(total == 0){
+                selectedTicketPair = (Map.Entry) selectedTickets.next();
+                total = Integer.parseInt(selectedTicketPair.getValue().toString());
+            }
+
+            Map.Entry selectedSeatPair = (Map.Entry) selectedSeats.next();
+
+            TicketType ticketType = getTicketType((String) selectedTicketPair.getKey());
+            Seat seat = seatsRepository.getOne(Long.parseLong(selectedSeatPair.getKey().toString()));
+            System.out.println("TICKETGENERATOR - PROCESSVIEWMODEL: " + selectedSeatPair.getKey() + " and " + selectedSeatPair.getValue());
+
+            ticketsForDatabase.add(new Ticket(generateRandomBarcode(), ticketType, seat, ticketViewModel.getSelectedViewing()));
+
+            total--;
+
+        }
+
+    }
+
+    private TicketType getTicketType(String ticketType){
+
+        for(TicketType type : ticketViewModel.getTicketTypes()){
+            if(ticketType.equals(type.getName())){
+                return type;
+            }
+        }
+
+        return null;
     }
 
     public void setValuesTickets(String fileName){
         this.fileName = fileName;
+
     }
 
     public Document generateTickets(){
+
+        // Generate tickets
+        processViewModel();
+
+        // Save the generated tickets
+        addTicketsToDatabase();
 
         Document document = null;
 
@@ -45,15 +109,26 @@ public class TicketGenerator{
             addMetaData(document);
             addTitlePage(document);
 
-            createTable(document, pdfWriter);
+            System.out.println("TICKETGENERATOR - GENERATETICKETS - CREATE TABLE TICKETS SIZE: " + ticketsForDatabase.size());
+            Integer index = 0;
+            for(Ticket t : ticketsForDatabase){
+                createTable(index, t, document, pdfWriter);
 
-            Paragraph paragraph = new Paragraph();
+                Paragraph paragraph = new Paragraph();
+                createEmptyLine(paragraph, 3);
+                document.add(paragraph);
+
+                index++;
+            }
+
+            Paragraph paragraph = new Paragraph(new Phrase("Totaal betaald: " + ticketViewModel.getTotalPrice()));
             createEmptyLine(paragraph, 1);
             document.add(paragraph);
 
+
             document.close();
         }catch(Exception e){
-            System.out.println("ERROR - TICKETGENERATOR - generateTickets(): " + e.getLocalizedMessage());
+            System.out.println("ERROR - TICKETGENERATOR - generateTickets(): " + e);
         }
 
         return document;
@@ -74,7 +149,7 @@ public class TicketGenerator{
                 byteArrayOutputStream.write(buffer, 0, bytesRead);
             }
         }catch(Exception e){
-            System.out.println("ERROR - TICKETGENERATOR - convertPDFToByteArray(): " + e.getLocalizedMessage());
+            System.out.println("ERROR - TICKETGENERATOR - convertPDFToByteArray(): " + e);
         }
 
         return byteArrayOutputStream;
@@ -97,13 +172,13 @@ public class TicketGenerator{
             title.add(new Paragraph("Bioscoop Avans - Order"));
 
             createEmptyLine(title, 1);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
             title.add(new Paragraph("Purchased on: " + simpleDateFormat.format(new Date())));
 
             document.add(title);
 
         }catch(Exception e){
-            System.out.println("ERROR - TICKETGENERATOR - addTitlePage(): " + e.getLocalizedMessage());
+            System.out.println("ERROR - TICKETGENERATOR - addTitlePage(): " + e);
         }
     }
 
@@ -114,11 +189,11 @@ public class TicketGenerator{
         }
     }
 
-    private void createTable(Document document, PdfWriter pdfWriter){
+    private void createTable(Integer index, Ticket ticket, Document document, PdfWriter pdfWriter){
         try{
             // Add empty lines to divide content
             Paragraph paragraph = new Paragraph();
-            createEmptyLine(paragraph, 2);
+            createEmptyLine(paragraph, 3);
             document.add(paragraph);
 
             String[] headers = new String[]{
@@ -143,13 +218,15 @@ public class TicketGenerator{
                 table.addCell(headerCell);
             }
 
+            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
+
             String[] phrases = new String[]{
-                    "Regulier",
-                    "7.50",
-                    "Jigsaw",
-                    "13:30",
-                    "1",
-                    "1"
+                    ticket.getTicketType().getName(),
+                    String.valueOf(ticket.getTicketType().getPrice()),
+                    ticketViewModel.getSelectedViewing().getMovie().getTitle(),
+                    String.valueOf(dateFormat.format(ticketViewModel.getSelectedViewing().getStartTime().getTime())),
+                    String.valueOf(ticketViewModel.getSelectedViewing().getRoom().getRoomNumber()),
+                    String.valueOf(ticket.getSeat().getSeatNumber())
             };
 
             PdfPCell cell;
@@ -161,7 +238,7 @@ public class TicketGenerator{
                 table.addCell(cell);
             }
 
-            cell = new PdfPCell(addBarcode(9999999, pdfWriter));
+            cell = new PdfPCell(addBarcode(Integer.parseInt(ticket.getBarcode()), pdfWriter));
             cell.setMinimumHeight(100);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -169,9 +246,25 @@ public class TicketGenerator{
 
             document.add(table);
         }catch(Exception e){
-            System.out.println("ERROR ADDING TABLE TO TICKETS: " + e.getLocalizedMessage());
+            System.out.println("ERROR ADDING TABLE TO TICKETS: " + e);
         }
 
+    }
+
+    private String generateRandomBarcode(){
+
+        int min = 1000000;
+        int max = 9999998;
+        String currentBarcode = "";
+
+        currentBarcode = String.valueOf(ThreadLocalRandom.current().nextInt(min, max + 1));
+
+        List<Ticket> tickets = ticketRepository.findTicketByBarcode(currentBarcode);
+        if(tickets.size() != 0){
+            currentBarcode = generateRandomBarcode();
+        }
+
+        return currentBarcode;
     }
 
     private Image addBarcode(Integer barcode, PdfWriter writer){
@@ -181,6 +274,13 @@ public class TicketGenerator{
         barcodeEAN.setCode(String.format("%08d", barcode));
 
         return barcodeEAN.createImageWithBarcode(writer.getDirectContent(), BaseColor.BLACK, BaseColor.GRAY);
+
+    }
+
+    private void addTicketsToDatabase(){
+
+        System.out.println("TICKETS SIZE: " + ticketsForDatabase.size());
+        ticketRepository.save(ticketsForDatabase);
 
     }
 
