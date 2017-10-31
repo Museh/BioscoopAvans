@@ -94,7 +94,7 @@ public class OverviewController {
         model.addAttribute("viewings", viewings);
         model.addAttribute("searchobject", new SearchTerm());
 
-        SessionTracker.getSession().setAttribute("test", searchobject.getSearch());
+        //SessionTracker.getSession().setAttribute("test", searchobject.getSearch());
 
         // TODO: fastest implementation is to navigate to a new page that looks the same as the movie
         return "overview/overview";
