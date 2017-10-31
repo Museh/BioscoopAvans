@@ -5,31 +5,34 @@
 </head>
 <body>
 <div th:replace="header::header"></div>
-<div class="seatselection">
-    <h1 style="align-content: center">-----------------------------</h1>
 
-    <form action="#" th:action="@{/ticketview/payment}" method="post">
-        <table class="seatselectiontable">
-            <tr class="tablerowseat" style="width: 100%" th:each="row : ${viewing.room.rows}">
-                <td class="seat" th:each="seat : ${row.seats}"><input th:class="${seat.id}" th:name="${seat.id}" type="checkbox" th:checked="${takenSeats.contains(seat.id)} ? true : false" /></td>
-            </tr>
-        </table>
-        <input type="submit" value="BETALEN" />
-    </form>
-</div>
-<div class="container col-12">
-    <p>Legenda:</p>
-    <div class="row">
-    <div class="col-sm-2">Rood = stoel bezet,</div>
-    <div class="col-sm-2">Groen = stoel vrij,</div>
-    <div class="col-sm-2">Blauw = uw stoelkeus.</div>
-</div>
-</div>
+<h1 style="align-content: center">-----------------------------</h1>
 
-<script>
-    $(":checkbox").on("change", function() {
-        $(this).parent().toggleClass("checked", this.checked);
-    });
+<form action="#" th:action="@{/ticketview/payment}" method="post">
+    <table>
+        <tr style="width: 100%" th:each="row : ${viewing.room.rows}">
+            <td th:each="seat : ${row.seats}"><input onclick="maxSeatsSelection()" class="seats" th:name="${seat.id}" type="checkbox" th:checked="${takenSeats.contains(seat.id)} ? true : false" th:disabled="${takenSeats.contains(seat.id)} ? true : false" /></td>
+        </tr>
+    </table>
+    <input type="submit" value="BETALEN" />
+</form>
+
+<script th:inline="javascript">
+    function maxSeatsSelection()
+    {
+        /*<![CDATA[*/
+        var limit = [[${totalSeats}]];
+        $('input.seats').on('change', function(e)
+        {
+            if ($('.seats:checked').not(':disabled').length > limit)
+            {
+                this.checked = false;
+            }
+        })
+    }
+    /*]]>*/
 </script>
+
+
 </body>
 </html>

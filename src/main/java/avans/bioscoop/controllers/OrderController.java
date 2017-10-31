@@ -1,17 +1,18 @@
 package avans.bioscoop.controllers;
 
-import avans.bioscoop.dao.RoomRepository;
-import avans.bioscoop.dao.TicketRepository;
-import avans.bioscoop.dao.TicketTypeRepository;
-import avans.bioscoop.dao.ViewingRepository;
+import avans.bioscoop.dao.*;
 import avans.bioscoop.models.*;
 import avans.bioscoop.services.SessionTracker;
-import org.hibernate.Session;
+import avans.bioscoop.services.TicketGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,17 +31,16 @@ public class OrderController {
     private ViewingRepository viewingRepository;
 
     @Autowired
-    private RoomRepository roomRepository;
+    private SeatsRepository seatsRepository;
 
     private List<TicketType> ticketTypes;
 
-    public OrderController(TicketRepository ticketRepository,
-                           ViewingRepository viewingRepository,
-                           RoomRepository roomRepository){
+    public OrderController(TicketRepository ticketRepository, ViewingRepository viewingRepository,
+                           TicketTypeRepository ticketTypeRepository, SeatsRepository seatsRepository){
         this.ticketRepository = ticketRepository;
         this.ticketTypeRepository = ticketTypeRepository;
         this.viewingRepository = viewingRepository;
-        this.roomRepository = roomRepository;
+        this.seatsRepository = seatsRepository;
 
         ticketTypes = new ArrayList<>();
 
@@ -73,7 +73,6 @@ public class OrderController {
 
         Viewing viewing = (Viewing) SessionTracker.getSession().getAttribute("selectedViewing");
         System.out.println("VIEWING ROOM: " + viewing.getRoom().getId());
-//        Room room = viewing.getRoom();
 
         // All taken seats
         List<Long> takenSeats = new ArrayList<>();
@@ -82,7 +81,6 @@ public class OrderController {
         }
 
         model.addAttribute("totalSeats", totalSeats);
-//        model.addAttribute("room", room);
         model.addAttribute("viewing", viewing);
         model.addAttribute("takenSeats", takenSeats);
 
@@ -95,7 +93,10 @@ public class OrderController {
         List<TicketType> ticketTypes = ticketTypeRepository.getAllTicketTypes();
 
         Double totalPrice = 0.0;
+
+        // Get all selected tickets from session
         Map<String, String> selectedTickets = (Map<String, String>) SessionTracker.getSession().getAttribute("selectedTickets");
+
         // For each ticket type
         for(TicketType t : ticketTypes){
             // Check if selectedTickets has a key with the same name
@@ -108,12 +109,15 @@ public class OrderController {
         SessionTracker.getSession().setAttribute("totalPrice", totalPrice);
         SessionTracker.getSession().setAttribute("selectedSeats", params);
 
+        System.out.println("Selected seats were: " + params.keySet());
 
         Viewing selectedViewing = (Viewing) SessionTracker.getSession().getAttribute("selectedViewing");
 
+        System.out.println("KEYS: " + selectedTickets.keySet() + " - " + "VALUES: " + selectedTickets.values());
         model.addAttribute("selectedTickets", selectedTickets);
         model.addAttribute("selectedViewing", selectedViewing);
         model.addAttribute("totalPrice", totalPrice);
+        model.addAttribute("selectedSeats", params.keySet());
 
         return "order/payment";
     }
@@ -121,6 +125,52 @@ public class OrderController {
     @GetMapping(value = "/printing")
     public String getPrintingView(){
 
+        /*
+            Session objects: Viewing, Selected Seats, TotalPrice, Selected Tickets,
+         */
         return "order/printing";
     }
+
+    @RequestMapping(value="/print", method = RequestMethod.POST)
+    public void printTickets(HttpServletRequest request, HttpServletResponse response){
+
+        // Empty ticket list to be filled with final tickets that are going to be inserted into the database
+        List<Ticket> ticketsToBeSaved = new ArrayList<>();
+
+        // Retrieve all needed data from current session
+        Viewing selectedViewing = (Viewing) SessionTracker.getSession().getAttribute("selectedViewing"); // current viewing information
+        Map<String, String> selectedTickets = (Map<String, String>) SessionTracker.getSession().getAttribute("selectedTickets"); // type and amount
+        Map<Long, String> selectedSeats = (Map<Long, String>) SessionTracker.getSession().getAttribute("selectedSeats"); // seat number of viewing room
+        Double totalPrice = (Double) SessionTracker.getSession().getAttribute("totalPrice"); // total costs to show at bottom
+        TicketViewModel ticketViewModel = new TicketViewModel(selectedViewing, selectedTickets, selectedSeats, ticketTypes, totalPrice);
+
+        ServletContext servletContext = request.getSession().getServletContext();
+        File tempDirectory = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
+
+        // Create ticketGenerator with the needed values to generate one or multiple tickets
+        TicketGenerator ticketGenerator = new TicketGenerator(ticketViewModel, ticketRepository, viewingRepository, seatsRepository);
+
+        // Get default paths and set file name
+        String temporaryFilePath = tempDirectory.getAbsolutePath();
+        String fileName = "Order_BioscoopAvans";
+        ticketGenerator.setValuesTickets(temporaryFilePath+"\\"+fileName);
+
+        // Set response type to pdf
+        response.setContentType("application/pdf");
+        response.setHeader("Content-disposition", "attachment; filename="+fileName+".pdf");
+
+        try{
+            // Generate tickets
+            ticketGenerator.generateTickets();
+            // Convert to Byte Array
+            ByteArrayOutputStream byteArrayOutputStream = ticketGenerator.convertPDFToByteArray(temporaryFilePath+"\\"+fileName);
+            OutputStream os = response.getOutputStream();
+            byteArrayOutputStream.writeTo(os);
+            os.flush();
+        }catch(Exception e){
+            System.out.println("ERROR GENERATING TICKETS IN ORDERCONTROLLER: " + e.getLocalizedMessage());
+        }
+
+    }
+
 }
