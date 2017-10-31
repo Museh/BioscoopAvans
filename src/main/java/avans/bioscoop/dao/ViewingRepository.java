@@ -13,4 +13,7 @@ public interface ViewingRepository extends JpaRepository<Viewing, Long>{
 
     @Query(value = "SELECT * FROM viewing WHERE Movie_ID = ?1 ORDER BY start_time asc", nativeQuery = true)
     List<Viewing> findAllViewingsByMovieId(long id);
+
+    @Query(value = "SELECT * FROM viewing OFFSET ?1 LIMIT ?2", nativeQuery = true)
+    List<Viewing> findAllViewsWithSkip(int skip, int count);
 }

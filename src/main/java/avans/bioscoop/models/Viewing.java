@@ -28,7 +28,11 @@ public class Viewing {
     @OneToOne
     private Movie movie;
 
+    @ManyToOne
+    private Room room;
+
     @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "VIEWING_ID", referencedColumnName = "id")
     private List<Ticket> tickets = new ArrayList<Ticket>();
 
     public Viewing(){}
@@ -38,9 +42,10 @@ public class Viewing {
         this.movie = movie;
     }
 
-    //public Viewing(Viewing viewing){
-    //    this.startTime = viewing.getStartTime();
-    //    this.movie = viewing.getMovie();
-    //}
+    public Viewing(Viewing viewing){
+        this.startTime = viewing.getStartTime();
+        this.movie = viewing.getMovie();
+    }
+
 
 }

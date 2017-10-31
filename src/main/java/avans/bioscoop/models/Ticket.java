@@ -21,11 +21,15 @@ public class Ticket {
     @OneToOne(cascade = CascadeType.ALL)
     private TicketType ticketType;
 
+    @ManyToOne
+    private Seat seat;
+
     private Ticket(){}
 
-    private Ticket(String barcode, TicketType ticketType){
+    private Ticket(String barcode, TicketType ticketType, Seat seat){
         this.barcode = barcode;
         this.ticketType = ticketType;
+        this.seat = seat;
     }
 
 }
