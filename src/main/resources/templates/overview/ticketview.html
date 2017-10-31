@@ -10,21 +10,23 @@
 <div>
     <h1>Kies uw Tickets</h1>
 
+
+
     <table th:if="${ticketTypes}">
         <thead>
-            <tr>
-                <td>Ticket Type</td>
-                <td>Prijs p.p.</td>
-                <td>Aantal</td>
-            </tr>
+        <tr class="tickettablerow">
+            <td class="tickettable">Ticket Type</td>
+            <td class="tickettable">€</td>
+            <td class="tickettable">Aantal</td>
+        </tr>
         </thead>
         <form action="#" th:action="@{/ticketview/chairselection}" method="post">
             <tbody th:each="ticketType: ${ticketTypes}">
-                <tr>
-                    <td th:text="${ticketType.name}"></td>
-                    <td th:text="${ticketType.price}"></td>
-                    <td><input type="number" th:name="${ticketType.name}"/></td>
-                </tr>
+            <tr class="tickettablerow">
+                <td class="tickettable" th:text="${ticketType.name}"></td>
+                <td class="tickettable" th:text="${ticketType.price}"></td>
+                <td class="tickettable"><input type="number" th:name="${ticketType.name}"/></td>
+            </tr>
             </tbody>
             <input type="submit" value="Selecteer zitplaatsen"/>
         </form>

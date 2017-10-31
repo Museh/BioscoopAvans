@@ -11,6 +11,8 @@ h1 {
     text-align: center;
 }
 
+/**overview**/
+
 viewingtiles, table{
     width: 100%;
     align-content: center;
@@ -27,7 +29,7 @@ viewingtiles, tr {
     margin: 10px;
 }
 
-viewingtiles, td, img {
+viewingtiles, .tdviewing, img {
     display: inline;
     width: 50%;
     margin-bottom: 10px;
@@ -35,21 +37,88 @@ viewingtiles, td, img {
 }
 
 
-viewingtiles, ul {
+viewingtiles, .overviewul {
     list-style-type: none;
     text-align: center;
     display: table-caption;
 }
 
-viewingtiles, li {
+viewingtiles, .overviewli {
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
+/**header**/
 .navbar {
     background-color: #f5c828 !important;
 }
 
 .navbar, h1 {
     color: black;
+}
+
+.searchbar {
+    margin-left: 800px;
+}
+
+/**seatselection**/
+
+.seatselection {
+    text-align: center;
+}
+
+.seatselectiontable {
+    display: block;
+    margin: 0px auto;
+}
+
+.tablerowseat {
+    margin-left: 20px;
+}
+
+.seat {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+    display: inherit;
+}
+
+.checked {
+    background-color: blue;
+}
+
+.seat.input {
+    display: block;
+}
+
+
+.seat.tbody {
+    display: block;
+}
+
+/**ticketview **/
+.tickettablerow {
+    border: 1px solid black;
+}
+
+.tickettable {
+    width: 39.5%;
+    border-right: 1px solid black;
+}
+
+
+/**moviedetails**/
+.moviedetailsimg {
+    float: left;
+    margin-top: -260px;
+}
+
+.moviedetailsul {
+    list-style-type: none;
+    text-align: center;
+}
+
+.moviedetailstimesul {
+    list-style-type: none;
+    text-align: center;
 }

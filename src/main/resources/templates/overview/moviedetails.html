@@ -7,31 +7,32 @@
 
 <div th:replace="header::header"></div>
 
-    <div>
-        <h1 th:text="${movie.title}"> </h1>
-    </div>
+<h1 style="text-align: center;" th:text="${movie.title}"> </h1>
+<div>
+    <ul class="moviedetailsul">
+        <li th:text="${movie.length} + minuten"></li>
+        <li th:text="${movie.age}"></li>
+        <!--<li th:text="${movie.is3D}"></li>-->
+        <li th:text="${movie.language}"></li>
+        <!--<li th:text="${movie.subs}"></li>-->
+    </ul>
+    <h1>Voorstellingen:</h1>
+    <ul class="moviedetailsul" th:each="viewing : ${viewings}">
+        <a th:href="@{'/ticketview/' + ${viewing.id}}"><li th:text="${viewing.startTime}"></li></a>
+    </ul>
 
-    <div style="float: left;">
-        <img th:src="${movie.image}" width="25%" />
-    </div>
-    <div>
-        <ul>
-            <li th:text="${movie.title}"></li>
-            <li th:text="${movie.length} + minuten"></li>
-            <li th:text="${movie.age}"></li>
-            <!--<li th:text="${movie.is3D}"></li>-->
-            <li th:text="${movie.language}"></li>
-            <!--<li th:text="${movie.subs}"></li>-->
-        </ul>
-    </div>
-
-    <h2>Tijden</h2>
 
     <div>
         <ul th:each="viewing : ${viewings}">
-            <a th:href="@{'/ticketview/' + ${viewing.id}}"><li th:text="${viewing.startTime}"></li></a>
-    </ul>
+            <li th:text="${viewing.startTime}"></li>
+        </ul>
+
+
     </div>
 
+    <div class="moviedetailsimg">
+        <img th:src="${movie.image}" width="25%" />
+    </div>
+</div>
 </body>
 </html>

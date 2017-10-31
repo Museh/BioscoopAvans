@@ -10,33 +10,28 @@
 <div class="wrapper">
     <h1>Viewings</h1>
 
-    <form action="#" th:action="@{/}" th:object="${searchobject}" method="post">
-        <p>Zoek: <input type="text" th:field="*{search}" /></p>
-        <p><input type="submit" value="Zoek" /></p>
-    </form>
-
     <div class="viewingtiles">
-    <table th:if="${viewings}">
-        <tr th:each="viewing : ${viewings}">
-            <td>
+        <table th:if="${viewings}">
+            <tr th:each="viewing : ${viewings}">
+                <td class="tdviewing">
                     <h3 style="text-align: center" th:text="${viewing.movie.title}"></h3>
                     <img th:src="${viewing.movie.image}"/>
 
-                <ul>
+                    <ul class="overviewul">
 
-                    <li th:text="${viewing.movie.length}  +  minuten"></li>
-                    <li th:text="${viewing.movie.age}"></li>
-                    <li th:text="${viewing.movie.language}"></li>
-                    <li></li>
-                    <li><a th:href="@{'/movie/details/' + ${viewing.movie.id}}">details</a></li>
-                </ul>
-            </td>
-        </tr>
-    </table>
+                        <li class="overviewli" th:text="${viewing.movie.length}  +  minuten"></li>
+                        <li class="overviewli" th:text="${viewing.movie.age}"></li>
+                        <li class="overviewli" th:text="${viewing.movie.language}"></li>
+                        <li></li>
+                        <li class="overviewli"><a th:href="@{'/movie/details/' + ${viewing.movie.id}}">details</a></li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <!--<ul th:each="viewing : ${viewings}">-->
-        <!--<li th:text="${viewing.movie.title}"></li>-->
+    <!--<li th:text="${viewing.movie.title}"></li>-->
     <!--</ul>-->
 
 </div>
