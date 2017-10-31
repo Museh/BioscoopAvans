@@ -110,15 +110,15 @@ viewingtiles, .overviewli {
 /**moviedetails**/
 .moviedetailsimg {
     float: left;
-    margin-top: -260px;
+    margin-top: 10px;
 }
 
 .moviedetailsul {
     list-style-type: none;
-    text-align: center;
+    text-align: left;
 }
 
 .moviedetailstimesul {
     list-style-type: none;
-    text-align: center;
+    text-align: left;
 }

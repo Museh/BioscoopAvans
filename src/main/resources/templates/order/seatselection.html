@@ -17,12 +17,15 @@
         <input type="submit" value="BETALEN" />
     </form>
 </div>
-<div class="legenda">
+<div class="container col-12">
     <p>Legenda:</p>
-    Rood = stoel bezet,
-    Groen = stoel vrij,
-    Blauw = uw stoelkeus.
+    <div class="row">
+    <div class="col-sm-2">Rood = stoel bezet,</div>
+    <div class="col-sm-2">Groen = stoel vrij,</div>
+    <div class="col-sm-2">Blauw = uw stoelkeus.</div>
 </div>
+</div>
+
 <script>
     $(":checkbox").on("change", function() {
         $(this).parent().toggleClass("checked", this.checked);
