@@ -171,8 +171,6 @@ public class OrderController {
             System.out.println("ERROR GENERATING TICKETS IN ORDERCONTROLLER: " + e.getLocalizedMessage());
         }
 
-        System.out.println("Called printTickets()");
-
     }
 
 }

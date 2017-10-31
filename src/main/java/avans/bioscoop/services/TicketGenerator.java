@@ -6,7 +6,6 @@ import avans.bioscoop.dao.ViewingRepository;
 import avans.bioscoop.models.*;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -64,7 +63,6 @@ public class TicketGenerator{
 
             TicketType ticketType = getTicketType((String) selectedTicketPair.getKey());
             Seat seat = seatsRepository.getOne(Long.parseLong(selectedSeatPair.getKey().toString()));
-            System.out.println("TICKETGENERATOR - PROCESSVIEWMODEL: " + selectedSeatPair.getKey() + " and " + selectedSeatPair.getValue());
 
             ticketsForDatabase.add(new Ticket(generateRandomBarcode(), ticketType, seat, ticketViewModel.getSelectedViewing()));
 
@@ -278,8 +276,6 @@ public class TicketGenerator{
     }
 
     private void addTicketsToDatabase(){
-
-        System.out.println("TICKETS SIZE: " + ticketsForDatabase.size());
         ticketRepository.save(ticketsForDatabase);
 
     }
