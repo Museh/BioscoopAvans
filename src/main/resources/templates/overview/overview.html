@@ -11,7 +11,7 @@
     <h1>Viewings</h1>
 
     <form action="#" th:action="@{/}" th:object="${searchobject}" method="post">
-        <p>Zoek: <input type="text" th:field="*{search}" /></p>
+        <p>Zoek: <input type="text" th:field="*{search}" th:value="${searchobject.search} ? searchobject.search : ''"/></p>
         <p><input type="submit" value="Zoek" /></p>
     </form>
 

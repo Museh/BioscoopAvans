@@ -7,6 +7,10 @@
 
 <div th:replace="header::header"></div>
 
+<form action="#" th:action="@{/ticketview/print}" method="post">
+    <label>Download tickets</label><input type="submit" value="Download"/>
+</form>
+
 <a th:href="@{/}">Back to home</a>
 
 </body>

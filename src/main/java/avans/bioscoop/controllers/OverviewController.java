@@ -4,19 +4,11 @@ import avans.bioscoop.dao.*;
 import avans.bioscoop.models.*;
 import avans.bioscoop.services.DataFilter;
 import avans.bioscoop.services.DatabaseManager;
-import avans.bioscoop.services.SessionTracker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.HttpSession;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,18 +57,17 @@ public class OverviewController {
         this.seatsRepository = seatsRepository;
 
 
-        this.db = new DatabaseManager(cinemaRepository, movieRepository, ticketRepository, ticketTypeRepository, viewingRepository, roomRepository, rowRepository, seatsRepository);
+        this.db = new DatabaseManager(cinemaRepository, movieRepository,
+                ticketRepository, ticketTypeRepository, viewingRepository,
+                roomRepository, rowRepository, seatsRepository);
     }
     
     @GetMapping
     public String movieOverview(Model model) {
         List<Viewing> viewings = viewingRepository.findAllViewings();
 
-        if(SessionTracker.getSession().getAttributeNames().hasMoreElements() == true){
-            String test = (String) SessionTracker.getSession().getAttribute("test");
-            System.out.println("FOUND SESSION STUFF: " + test);
-        }
-
+        DataFilter df = new DataFilter();
+        viewings = df.getTodaysViewings(viewings);
 
         model.addAttribute("viewings", viewings);
         model.addAttribute("searchobject", new SearchTerm());
@@ -92,44 +83,16 @@ public class OverviewController {
         List<Viewing> viewings = df.filterViewingsByMovieTitle(viewingRepository.findAllViewings(), searchobject.getSearch());
 
         model.addAttribute("viewings", viewings);
-        model.addAttribute("searchobject", new SearchTerm());
+        model.addAttribute("searchobject", searchobject);
 
-        SessionTracker.getSession().setAttribute("test", searchobject.getSearch());
-
-        // TODO: fastest implementation is to navigate to a new page that looks the same as the movie
         return "overview/overview";
     }
-
-
-
-//    @GetMapping(value = "/search/{term}")
-//    public String searchMovie(@PathVariable(value = "term", required = false) String term, Model model){
-//
-//        DataFilter df = new DataFilter();
-//
-//        List<Viewing> viewings = df.filterViewingsByMovieTitle(viewingRepository.findAllViewings(), term);
-//
-//        if(term != ""){
-//            model.addAttribute("viewings", viewings);
-//        }else{
-//            model.addAttribute("viewings", viewings);
-//        }
-//
-//        // TODO: fastest implementation is to navigate to a new page that looks the same as the movie
-//        return "overview/overview";
-//    }
-
     
     @GetMapping(value = "/movie/details/{id}")
     public String getMovieDetails(@PathVariable(value ="id", required = true) Long movieid, Model model){
-        //System.out.println("inside movie details");
+
         Movie movie = movieRepository.findOne(movieid);
         List<Viewing> viewings = viewingRepository.findAllViewingsByMovieId(movieid);
-
-        if(SessionTracker.getSession().getAttributeNames().hasMoreElements() == true){
-            String test = (String) SessionTracker.getSession().getAttribute("test");
-            System.out.println("FOUND SESSION STUFF IN MOVIE DETAILS: " + test);
-        }
 
         model.addAttribute("movie", movie);
         model.addAttribute("viewings", viewings);
@@ -138,11 +101,10 @@ public class OverviewController {
 
     @GetMapping ("/movies")
     public String allMovies(Model model) {
-        List<Movie> movie = new ArrayList<Movie>();
-        movie = movieRepository.findAll();
+        List<Movie> movie = movieRepository.findAll();
 
         model.addAttribute("movie", movie);
-        // TODO: Retrieve movie data and pass it to your view with a model named after 'movies'
+
         return "overview/movies";
     }
 
