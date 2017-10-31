@@ -50,7 +50,7 @@ public class BioscoopAvansApplicationTests {
 	@Before
 	public void setup() throws Exception{
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-		//this.mockMvc.perform(get("overview/overview"));
+		this.mockMvc.perform(get("overview/overview"));
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date now1 =sdf.parse("2017-10-31 19:15:00");
 		Date now2 =sdf.parse("2017-10-31 14:15:00");
@@ -75,10 +75,13 @@ public class BioscoopAvansApplicationTests {
 	@Test
 	public void testSearchWithResult() throws Exception {
 		this.mockMvc.perform(post("/")
-				.param("searchobject", "blade"))
+				.param("search", "Blade Runner"))
 				.andExpect(status().isOk())
-				.andExpect(model().size(1));
+				.andExpect(model().attributeExists("viewings"))
+				.andExpect(view().name("overview/overview"));;
 	}
+
+
 
 //	@Test
 //	public void testGetLoginPage() throws Exception{

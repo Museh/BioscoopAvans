@@ -7,7 +7,46 @@
 
 <div th:replace="header::header"></div>
 
-<a th:href="@{/ticketview/printing}">Payment</a>
+<h1>Overzicht bestelling</h1>
+<h2>Voorstelling</h2>
+<table>
+    <thead>
+        <tr>
+            <td th:width="250">Film</td>
+            <td th:width="250">Zaal</td>
+            <td th:width="250">Rolstoelvriendelijk?</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td th:width="250" th:text="${selectedViewing.movie.title}"></td>
+            <td th:width="250" th:text="${selectedViewing.room.roomNumber}"></td>
+            <td th:width="250" th:text="${selectedViewing.room.wheelchair} ? ja : nee"></td>
+        </tr>
+    </tbody>
+</table>
+
+
+<h2>Bestelde kaartjes</h2>
+<table>
+    <thead>
+        <tr>
+            <td th:width="250">Type</td>
+            <td th:width="250">Aantal</td>
+        </tr>
+    </thead>
+    <tbody th:each="pair : ${selectedTickets}">
+        <tr>
+            <td th:width="250" th:text="${pair.key}"></td>
+            <td th:width="250" th:text="${pair.value}"></td>
+        </tr>
+    </tbody>
+</table>
+
+<h3 th:text="'Totale kosten:' + ${totalPrice}"></h3>
+
+
+<a class="btn btn-primary" th:href="@{/ticketview/printing}">Betaald</a>
 
 </body>
 </html>

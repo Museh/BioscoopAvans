@@ -11,7 +11,7 @@
 <form action="#" th:action="@{/ticketview/payment}" method="post">
     <table>
         <tr style="width: 100%" th:each="row : ${viewing.room.rows}">
-            <td th:each="seat : ${row.seats}"><input onclick="maxSeatsSelection()" class="seats" th:name="${seat.id}" type="checkbox" th:checked="${takenSeats.contains(seat.id)} ? true : false" /></td>
+            <td th:each="seat : ${row.seats}"><input onclick="maxSeatsSelection()" class="seats" th:name="${seat.id}" type="checkbox" th:checked="${takenSeats.contains(seat.id)} ? true : false" th:disabled="${takenSeats.contains(seat.id)} ? true : false" /></td>
         </tr>
     </table>
     <input type="submit" value="BETALEN" />
@@ -24,7 +24,7 @@
         var limit = [[${totalSeats}]];
         $('input.seats').on('change', function(e)
         {
-            if ($('.seats:checked').length > limit)
+            if ($('.seats:checked').not(':disabled').length > limit)
             {
                 this.checked = false;
             }
