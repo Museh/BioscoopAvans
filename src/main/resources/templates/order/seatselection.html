@@ -24,7 +24,7 @@
         var limit = [[${totalSeats}]];
         $('input.seats').on('change', function(e)
         {
-            if ($('.seats:checked').isDisabled(false).length > limit)
+            if ($('.seats:checked').length > limit)
             {
                 this.checked = false;
             }
