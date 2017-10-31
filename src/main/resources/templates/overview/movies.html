@@ -7,14 +7,13 @@
 
 <div th:replace="header::header"></div>
 
-<div>
+<div class="movieoverview">
     <h1>Alle films</h1>
-
     <table th:if="${movie}">
         <tr th:each="movie : ${movie}">
             <td>
                 <a th:href="@{'/movie/details/' + ${movie.id}}">
-                    <img th:src="${movie.image}" width="35%"/>
+                    <img class="movieoverviewimg" th:src="${movie.image}" width="35%"/>
                 </a>
             </td>
 

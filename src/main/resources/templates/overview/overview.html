@@ -8,6 +8,11 @@
 <div th:replace="header::header"></div>
 
 <div class="wrapper">
+    <div class="searchbar">
+            <form action="#" th:action="@{/}" th:object="${searchobject}" method="post">
+                <p>Zoek: <input type="text" th:field="*{search}" /><input type="submit" value="Zoek" /></p>
+            </form>
+    </div>
     <h1>Viewings</h1>
 
     <div class="viewingtiles">
@@ -16,6 +21,7 @@
                 <td class="tdviewing">
                     <h3 style="text-align: center" th:text="${viewing.movie.title}"></h3>
                     <img th:src="${viewing.movie.image}"/>
+
 
                     <ul class="overviewul">
 

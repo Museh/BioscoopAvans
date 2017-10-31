@@ -48,6 +48,12 @@ viewingtiles, .overviewli {
     margin-bottom: 10px;
 }
 
+.searchbar {
+    text-align: right;
+    margin-top: 10px;
+    margin-right: 10%;
+}
+
 /**header**/
 .navbar {
     background-color: #f5c828 !important;
@@ -57,8 +63,11 @@ viewingtiles, .overviewli {
     color: black;
 }
 
-.searchbar {
-    margin-left: 800px;
+.navbar-item {
+    text-align: right;
+    color: black;
+    font-weight: 400;
+    margin-left: 25px;
 }
 
 /**seatselection**/
@@ -121,4 +130,9 @@ viewingtiles, .overviewli {
 .moviedetailstimesul {
     list-style-type: none;
     text-align: left;
+}
+
+.movieoverviewimg {
+    margin-left: 25%;
+    margin-top: 10px;
 }

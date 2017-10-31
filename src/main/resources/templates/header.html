@@ -18,7 +18,10 @@
 <body>
 
 <nav th:fragment="header" class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
-    <a href="#" class="navbar-brand"><h1>Avans Bioscoop</h1></a>
+    <a th:href="@{'/#/'}" class="navbar-item"><h1>Avans Bioscoop</h1></a>
+    <a th:href="@{'/movies/'}" class="navbar-item">Alle films</a>
+    <a th:href="@{'/contact/'}" class="navbar-item">Contact</a>
 </nav>
+
 </body>
 </html>
