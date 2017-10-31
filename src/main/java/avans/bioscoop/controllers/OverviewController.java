@@ -83,7 +83,7 @@ public class OverviewController {
         List<Viewing> viewings = df.filterViewingsByMovieTitle(viewingRepository.findAllViewings(), searchobject.getSearch());
 
         model.addAttribute("viewings", viewings);
-        model.addAttribute("searchobject", new SearchTerm());
+        model.addAttribute("searchobject", searchobject);
 
         return "overview/overview";
     }
